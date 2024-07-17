@@ -15,7 +15,7 @@ type HttpRequest = {
   method: HttpMethod;
   host: string;
   path: string;
-  body?: any;
+  body?: User;
   params?: { [key: string] : string };
 }
 
@@ -30,7 +30,7 @@ type HttpResponse = {
 
 interface EventHandlers {
   next?: (request: HttpRequest) => HttpResponse
-  error?: (error: any) => HttpResponse
+  error?: (error: Error) => HttpResponse
   complete?: () => void
 }
 
@@ -49,7 +49,7 @@ class Observer {
     }
   }
 
-  error(error: any) : void {
+  error(error: Error) : void {
     if (!this.isUnsubscribed) {
       if (this.handlers.error) {
         this.handlers.error(error);
@@ -144,7 +144,7 @@ const handleRequest = (request: HttpRequest) : HttpResponse => {
   // handling of request
   return { status: HttpStatus.OK};
 };
-const handleError = (error: any) : HttpResponse => {
+const handleError = (error: Error) : HttpResponse => {
   // handling of error
   return {status: HttpStatus.INTERNAL_SERVER_ERROR};
 };
@@ -159,5 +159,3 @@ const subscription = requests$.subscribe({
 });
 
 subscription.unsubscribe();
-
-
